@@ -1,4 +1,4 @@
-# GitHub Setup & Submission Guide
+# GitHub Setup Guide
 
 ## Steps to Set Up Your GitHub Repository
 
@@ -250,8 +250,8 @@ Share link: https://github.com/YOUR_USERNAME/distributed-binary-relevance
 Clone command: git clone https://github.com/YOUR_USERNAME/distributed-binary-relevance.git
 ```
 
-### For Assignment Submission
-Include in submission:
+### Sharing the Repository
+Include in documentation:
 1. Repository URL
 2. Link to specific commit (if needed)
 3. Link to README.md

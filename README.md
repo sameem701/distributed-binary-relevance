@@ -89,30 +89,23 @@ This will install:
 
 ## Running the Code
 
-### Option 1: Quick Start (Optimized Version - Recommended)
+### Quick Start (Optimized Version - Recommended)
 
 ```bash
-# Run binary relevance on top 50 most frequent labels
+# Binary relevance on top 50 most frequent labels
 python milestone1_optimized.py
 ```
 
-**Expected Runtime**: ~4-5 minutes
-**Memory Usage**: ~2-3 GB
+**Runtime**: ~4-5 minutes | **Memory**: ~2-3 GB
 
-**Output**:
-- Trained 50 binary classifiers in parallel
-- Test predictions saved to `test_predictions.npy`
-- Console output showing metrics and timing
-
-### Option 2: Full Implementation (All Labels)
+### Full Implementation (All Labels)
 
 ```bash
-# Run with all 3,806 labels - WARNING: Computationally expensive
+# All 3,806 labels - computationally intensive
 python milestone1.py
 ```
 
-**Expected Runtime**: 30+ minutes (depends on system)
-**Memory Usage**: 8+ GB
+**Runtime**: 30+ minutes | **Memory**: 8+ GB
 
 ## Output Interpretation
 
