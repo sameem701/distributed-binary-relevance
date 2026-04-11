@@ -2,3 +2,5 @@
 "*.pkl" 
 "partitions/" 
 venv/
+_docx_extract/
+models_node_level/
