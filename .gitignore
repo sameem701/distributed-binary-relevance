@@ -4,3 +4,11 @@
 venv/
 _docx_extract/
 models_node_level/
+"*.npz" 
+"*.pkl" 
+"*.csv" 
+"*.docx" 
+"*.pdf" 
+"partitions/" 
+"~$*" 
+"venv/" 

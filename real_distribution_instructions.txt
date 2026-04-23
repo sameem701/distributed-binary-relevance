@@ -1,0 +1,144 @@
+===========================================================================
+  HOW TO RUN MILESTONE 2 ON REAL MULTIPLE MACHINES (ACTUAL DISTRIBUTION)
+===========================================================================
+
+OVERVIEW
+--------
+- YOUR laptop   : runs the notebook, acts as scheduler AND aggregator
+- OTHER laptops : act as worker nodes, only need one terminal command each
+- All machines must be on the SAME Wi-Fi / network
+
+
+CAN I USE MORE OR FEWER THAN 5 MACHINES?
+-----------------------------------------
+Yes. The number of machines is NOT fixed. You can use 2, 3, 4, or more.
+Dask automatically distributes submitted tasks across however many workers
+are connected at the time.
+
+To adjust the number of label batches to match your worker count, change
+this line in the notebook (in the distributed setup cell):
+
+    num_nodes = 4    <-- change this to however many worker laptops you have
+
+Then the label_batches list will have that many batches and each worker
+machine gets one batch to train.
+
+
+STEP-BY-STEP INSTRUCTIONS
+--------------------------
+
+--- BEFORE ANYTHING ---
+
+1. Find your (scheduler) machine's IPv4 address:
+   - Open CMD and run:  ipconfig
+   - Look for "IPv4 Address" under your active Wi-Fi adapter
+   - Example: 192.168.1.100
+   - This is YOUR_IP used throughout these instructions
+
+2. Make sure all machines are on the same Wi-Fi network.
+
+
+--- ON YOUR LAPTOP (Scheduler + Aggregator) ---
+
+3. Install packages (if not already):
+      pip install "dask[distributed]" scikit-learn pandas numpy
+
+4. Start the Dask scheduler:
+      dask scheduler
+   You will see output like:
+      Scheduler at: tcp://192.168.1.100:8786
+      Dashboard at: http://192.168.1.100:8787/status
+   Leave this terminal open.
+
+5. Copy partition files to each worker laptop (see next section).
+
+6. Open milestone2.ipynb in Jupyter/VS Code.
+
+7. In the real distribution setup cell, set:
+      SCHEDULER_IP = "192.168.1.100"   <-- your actual IPv4
+      (also update num_nodes to match how many worker laptops you have)
+
+8. Run the notebook cells in order. The notebook will:
+   - Prepare and scatter data to workers
+   - Submit training tasks (one per worker)
+   - Wait and collect results as each machine finishes
+   - Save all models and metrics to models_node_level/
+
+
+--- ON EACH WORKER LAPTOP ---
+
+9. Install packages:
+      pip install "dask[distributed]" scikit-learn pandas numpy
+
+10. Copy these files from your machine to the worker laptop
+    (use a USB drive, shared folder, or any file transfer method):
+      - partitions/partition_X.csv    (give each laptop a different one)
+      - normalization_params.pkl
+      - partition_metadata.pkl
+    Place them in the same relative folder structure as your project.
+
+11. Start the Dask worker by running this ONE command in CMD:
+      dask worker tcp://192.168.1.100:8786
+    Replace 192.168.1.100 with YOUR_IP.
+    Leave this terminal open.
+
+    That's it for the worker laptops — no notebook, no Python script needed.
+
+
+--- VERIFYING WORKERS ARE CONNECTED ---
+
+12. After workers run their command, your scheduler terminal will show:
+      Register worker: tcp://192.168.1.X:XXXXX
+    One line per connected worker.
+
+13. You can also open the Dask dashboard in a browser:
+      http://YOUR_IP:8787/status
+    It shows all connected workers and live task progress.
+
+
+WHAT HAPPENS WHEN YOU RUN THE NOTEBOOK
+---------------------------------------
+1. client.scatter()  -- your machine sends training data to all workers ONCE
+2. client.submit()   -- your machine sends one label batch + worker function
+                        to each connected worker machine
+3. Workers train their assigned binary classifiers independently (in parallel)
+4. as_completed()    -- your machine collects results as each worker finishes
+5. Models + metrics are saved back to your machine (models_node_level/)
+
+
+ROLE SUMMARY
+------------
+Machine         Role                   What to run
+-----------     --------------------   ----------------------------------------
+Your laptop     Scheduler + Master     dask scheduler  +  milestone2.ipynb
+Worker laptop 1 Worker node 0          dask worker tcp://YOUR_IP:8786
+Worker laptop 2 Worker node 1          dask worker tcp://YOUR_IP:8786
+Worker laptop 3 Worker node 2          dask worker tcp://YOUR_IP:8786
+... and so on for any number of worker laptops
+
+
+EXAMPLE: RUNNING WITH ONLY 2 LAPTOPS
+--------------------------------------
+1. Set num_nodes = 2 in the notebook setup cell
+2. Start dask scheduler on your machine
+3. On the other laptop: dask worker tcp://YOUR_IP:8786
+4. Run the notebook — 2 label batches will be created, one per machine
+
+
+EXAMPLE: RUNNING WITH 4 LAPTOPS
+---------------------------------
+1. Set num_nodes = 4 in the notebook setup cell
+2. Start dask scheduler on your machine
+3. On each of the 3 other laptops: dask worker tcp://YOUR_IP:8786
+4. Run the notebook — 4 label batches, one per machine
+
+
+NOTES
+-----
+- If a worker disconnects mid-training, the retry logic in the notebook
+  (MAX_RETRIES = 2) will automatically re-submit that node's task.
+- Model files are saved on YOUR machine inside models_node_level/node_X/
+- You do NOT need to run the LocalCluster cells (they are commented out).
+- The Dask dashboard (http://YOUR_IP:8787) shows live progress during training.
+
+===========================================================================

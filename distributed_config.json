@@ -1,0 +1,51 @@
+{
+    "framework": "Dask Distributed",
+    "dask_version": "2026.3.0",
+    "cluster_type": "LocalCluster (simulated 4-node cluster)",
+    "num_workers": 4,
+    "threads_per_worker": 1,
+    "memory_per_worker": "4 GB",
+    "data_format": "Sparse CSR .npz (MaxAbsScaler, sparsity-preserving)",
+    "partitioning": {
+        "strategy": "Vertical (column-based) sharding \u2014 sparse",
+        "num_partitions": 4,
+        "features_per_node": 1250,
+        "rows_per_node": 15377,
+        "cross_node_comm": "None (disjoint column ranges, all rows on every node)"
+    },
+    "preprocessing_deployed": [
+        {
+            "node_id": 0,
+            "pid": 6976,
+            "status": "OK",
+            "elapsed_sec": 0.114,
+            "sparsity_pct": 94.97
+        },
+        {
+            "node_id": 1,
+            "pid": 28480,
+            "status": "OK",
+            "elapsed_sec": 0.067,
+            "sparsity_pct": 95.48
+        },
+        {
+            "node_id": 2,
+            "pid": 13964,
+            "status": "OK",
+            "elapsed_sec": 0.114,
+            "sparsity_pct": 95.27
+        },
+        {
+            "node_id": 3,
+            "pid": 9572,
+            "status": "OK",
+            "elapsed_sec": 0.116,
+            "sparsity_pct": 95.23
+        }
+    ],
+    "total_wall_time_sec": 0.586,
+    "validation": {
+        "all_in_range": true,
+        "total_missing": 0
+    }
+}
