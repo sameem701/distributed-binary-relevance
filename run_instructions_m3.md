@@ -1,6 +1,6 @@
 # Milestone 3 Run Instructions
 
-This guide explains how to run `milestone3.ipynb` on another PC.
+This guide explains how to run `milestone3_updated.ipynb` on another PC.
 
 ## 1. Prerequisites: Milestones 1 and 2 Must Be Run First
 
@@ -9,10 +9,12 @@ Before running `milestone3.ipynb`, you must have already run both previous noteb
 successfully and have the following files in your project folder:
 
 From Milestone 1:
+
 - `X_test_normalized.npz`
 - `test_meta.csv`
 
 From Milestone 2:
+
 - `models_node_level/model_registry.csv`
 - `models_node_level/node_training_summary.csv`
 - `models_node_level/node_0/` to `models_node_level/node_3/` (one folder per worker node,
@@ -23,7 +25,7 @@ run instructions.
 
 ## 2. Required Software
 
-- Python 3.10+ (recommended)
+- Python 3.11+ (all machines — master and workers — **must run the same Python version**)
 - VS Code with Jupyter extension (recommended) or Jupyter Notebook/Lab
 - A running Dask cluster (scheduler + workers) — see Section 6 below
 
@@ -64,7 +66,7 @@ pip install scipy pyarrow
 
 Your folder should contain at least:
 
-- `milestone3.ipynb`
+- `milestone3_updated.ipynb`
 - `X_test_normalized.npz`
 - `test_meta.csv`
 - `models_node_level/` (folder produced by Milestone 2, with all node subfolders and
@@ -83,6 +85,7 @@ dask scheduler
 ```
 
 The scheduler will print its address, for example:
+
 ```
 Scheduler at: tcp://192.168.0.103:8786
 ```
@@ -96,7 +99,7 @@ dask worker tcp://<SCHEDULER_IP>:8786
 
 Replace `<SCHEDULER_IP>` with the actual IP printed by the scheduler.
 
-**Before running the notebook**, open `milestone3.ipynb` and update the scheduler IP
+**Before running the notebook**, open `milestone3_updated.ipynb` and update the scheduler IP
 in the connection cell:
 
 ```python
@@ -110,7 +113,7 @@ workers over the network.
 ## 7. How To Run
 
 1. Start the Dask scheduler and all worker machines as described in Section 6.
-2. Open `milestone3.ipynb`.
+2. Open `milestone3_updated.ipynb`.
 3. Update `SCHEDULER_IP` to your scheduler's IP address.
 4. Select the Python kernel from your `venv`.
 5. Run all cells from top to bottom in order.
@@ -184,3 +187,8 @@ To run reliably on another machine:
   completed its model collection step successfully.
 - If the Parquet write is skipped, install pyarrow (`pip install pyarrow`) and re-run
   only the inference cell. The CSV output is always written regardless.
+- If `SystemError: unknown opcode 128` appears on the inference cell, it means the master
+  machine and worker machines are running different Python versions. The master is likely
+  Python 3.11+ while one or more workers are on 3.10 or older. Fix: install the same
+  Python version on all machines, then restart all worker processes with
+  `dask worker tcp://<SCHEDULER_IP>:8786`.
